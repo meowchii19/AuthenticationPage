@@ -3,18 +3,27 @@ const User = require('../model/user');
 const {registerValidation, loginValidation} = require('../validation')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const Entries = require('../models/model')
 
 
+router.get('/find', async (req, res) => {
+	try{
+		const entries = await Entries.find()
+		res.json(entries)
+	}catch(error) {
+		res.send(error)
+	}
+
+
+})
 
 router.post('/register', async (req, res) => {
 
-	const {error} = registerValidation(req.body)
-	if(error) return res.status(400).send(error.details[0].message);
 
 
 	//checking if user is already exist
 	const emailExist = await User.findOne({email: req.body.email});
-	if(emailExist) return res.status(400).send('Email already exists')
+	if(emailExist) return res.status(400).send({ message:'Email already exists' })
 
 	const salt = await bcrypt.genSalt(10)
 	const hashPassword = await bcrypt.hash(req.body.password, salt)
@@ -27,7 +36,7 @@ router.post('/register', async (req, res) => {
 	})
 	try{
 	    const savedUser = await user.save()
-	    res.send({ user: user._id })
+	    res.status(200).send(savedUser)
 	}catch(err){
  	    res.status(400).send(err)
 	}
@@ -37,20 +46,15 @@ router.post('/register', async (req, res) => {
 
 router.post('/login',  async (req, res) =>{
 
-	const {error} = loginValidation(req.body)
-	if(error) return res.status(400).send(error.details[0].message);
-
 	//checking if user is already exist
 	const user = await User.findOne({email: req.body.email});
-	if(!user) return res.status(400).send('Email or Password does not Match')
+	if(!user) return res.status(400).send({ message:'Email or Password does not Match'  })
 	
 	//password is correct
 	const validPass = await bcrypt.compare(req.body.password, user.password)
-	if(!validPass) return res.status(400).send('Invalid Password')
+	if(!validPass) return res.status(400).send({ message:'Invalid Password'  })
 	
-	//Create and assing a token
-	const token = jwt.sign({ _id: user._id} , process.env.TOKEN_SECRET)
-	res.header('auth-token', token).send(token);
+	res.send({ message: "logged in" })
 })
 
 
