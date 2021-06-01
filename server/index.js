@@ -4,11 +4,16 @@ const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const authRoute = require('./routes/auth')
 const cors = require('cors')
+const cookie = require('cookie-parser')
 
 dotenv.config()
-app.use(cors())
+app.use(cookie())
 app.use(express.json())
 
+app.use(cors({
+		credentials: true, 
+		origin: 'http://localhost:3000'
+}))
 
 const db = 'mongodb+srv://admin:pass@cluster0.nrfor.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 

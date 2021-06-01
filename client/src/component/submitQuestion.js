@@ -10,7 +10,6 @@ export const submitQuestion = async ({ name, email, password }, route) => {
        cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
-        'authorization': 'xxxxxxxxxx',
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
       },

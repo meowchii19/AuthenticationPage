@@ -6,16 +6,6 @@ const jwt = require('jsonwebtoken')
 const Entries = require('../models/model')
 
 
-router.get('/find', async (req, res) => {
-	try{
-		const entries = await Entries.find()
-		res.json(entries)
-	}catch(error) {
-		res.send(error)
-	}
-
-
-})
 
 router.post('/register', async (req, res) => {
 
@@ -54,9 +44,57 @@ router.post('/login',  async (req, res) =>{
 	const validPass = await bcrypt.compare(req.body.password, user.password)
 	if(!validPass) return res.status(400).send({ message:'Invalid Password'  })
 	
-	res.send({ message: "logged in" })
+	const token = jwt.sign({ _id: user._id }, "secret")
+
+	res.cookie('jwt', token, {
+		httpOnly: true,
+		maxAge: 24*60*60*1000
+	})
+	res.send({ message: 'success' })
 })
 
+router.get('/find', async (req, res) => {
+	
+	try{
+		const entries = await Entries.find()
+		res.json(entries)
+	}catch(error) {
+		res.send(error)
+	}
+
+
+
+})
+
+router.get('/user', async (req, res) => {
+	
+	try {
+
+		const cookie =  req.cookies['jwt']
+		const claims = jwt.verify(cookie, 'secret')
+		 
+		if(!claims) {
+			return res.status(401).send({ 
+				message: 'unauthenticated'
+			})
+		}
+
+		const user = await User.findOne({ _id: claims._id })
+		const { password, ...data } = user.toJSON()
+
+		res.send(data)
+
+	}catch(error) {
+
+			return res.status(401).send({ 
+				message: 'unauthenticated'
+			})
+
+	}
+
+
+
+})
 
 module.exports = router;
 
