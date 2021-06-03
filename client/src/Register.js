@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -9,6 +9,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
+import AuthContext from './context/AuthContext'
+import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,11 +38,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Register() {
   const classes = useStyles();
+  const {getLoggedIn} = useContext(AuthContext)
   const [ state, setState ] = useState({
     name: '', 
     email: '', 
     password: '',
   })
+  const history = useHistory()
 
  const handleSubmit = async (e) => {
     e.preventDefault()
@@ -51,6 +55,9 @@ export default function Register() {
              "password" : state.password,
     };   
      await axios.post('http://localhost:4000/api/register', allDataInputs)
+     getLoggedIn()
+     history.push('/')
+
 
    }catch(err) {
      console.log(err)

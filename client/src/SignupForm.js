@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext,  } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -8,8 +8,9 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import submitQuestion from './component/submitQuestion'
+import AuthContext from './context/AuthContext'
 import axios from 'axios'
+import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,7 +43,10 @@ export default function SignInSide() {
     email: '', 
     password: '',
   })
+  const history = useHistory()
 
+const { getLoggedIn } = useContext(AuthContext)
+  console.log(getLoggedIn())
  const handleSubmit = async (e) => {
     e.preventDefault()
    try{
@@ -50,7 +54,9 @@ export default function SignInSide() {
              "email": state.email,
              "password" : state.password,
        }       
-   await axios.post('http://localhost:4000/api/login', allDataInputs)
+     await axios.post('http://localhost:4000/api/login', allDataInputs)
+     getLoggedIn()
+     history.push('/')
 
    }catch (err) {
      console.log(err)
