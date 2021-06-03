@@ -19,10 +19,6 @@ export const Home = () => {
 
   }
 
-  useEffect(()=> {
-    getData().then(res => res.json()).then(({name}) => setName(name))
-
-  })
 
   return <h1>{ name ? name : 'hello'}  </h1>
 }

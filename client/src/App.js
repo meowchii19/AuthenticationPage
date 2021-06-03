@@ -1,16 +1,18 @@
-import SignupForm from './SignupForm'
-import Home from './Home'
-import  { BrowserRouter, Route } from 'react-router-dom'
+import axios from 'axios'
+import { AuthContextProvider } from './context/AuthContext'
+import Router from './Router'
+
+axios.defaults.withCredentials = true;
 
 
 function App() {
+
+
   return (
     <div className="App">
-      <BrowserRouter>
-        <Route path="/" exact component={Home}/>
-        <Route path="/login" exact component={SignupForm}/>
-      </BrowserRouter>
-
+      <AuthContextProvider>
+        <Router />
+      </AuthContextProvider>
     </div>
   );
 }

@@ -25,6 +25,7 @@ mongoose.connect(db,{ useUnifiedTopology : true, useNewUrlParser: true},
 
 //route middlewares
 app.use('/api/', authRoute);
+app.use('/entry/', require('./routes/posts'));
 
 const PORT = process.env.PORT || 4000
 app.listen(PORT, () => console.log(`server is running on ${PORT}`))

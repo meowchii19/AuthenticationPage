@@ -1,13 +1,14 @@
 const express = require('express')
 const router = express.Router()
 const Entries = require("../models/model")
+const auth = require('./verifytoken')
 
 router.get('/post/:id', async (req, res) =>{
   res.send(req.params.id)
 })
 
 //CREATE QUESTION
-router.post('/create', async  (req, res) => {
+router.post('/create', auth, async (req, res) => {
   const entry = new Entries({
     image: req.body.image,
     question: req.body.question,
@@ -24,7 +25,7 @@ router.post('/create', async  (req, res) => {
 
 
 //READ ALL QUESTIONS
-router.get('/readAll', async (req, res) => {
+router.get('/readAll',auth, async (req, res) => {
   try{
     const entries = await Entries.find();
     res.status(200).send(entries)

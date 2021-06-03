@@ -8,7 +8,6 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import submitQuestion from './component/submitQuestion'
 import axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignInSide() {
+export default function Register() {
   const classes = useStyles();
   const [ state, setState ] = useState({
     name: '', 
@@ -45,16 +44,18 @@ export default function SignInSide() {
 
  const handleSubmit = async (e) => {
     e.preventDefault()
-   try{
-    const allDataInputs = {                                           
+   try {
+    const allDataInputs = {                                      
+             "name": state.name,   
              "email": state.email,
              "password" : state.password,
-       }       
-   await axios.post('http://localhost:4000/api/login', allDataInputs)
+    };   
+     await axios.post('http://localhost:4000/api/register', allDataInputs)
 
-   }catch (err) {
+   }catch(err) {
      console.log(err)
    }
+
   }
 
  const handleChange = (e) =>{
@@ -88,6 +89,16 @@ export default function SignInSide() {
               margin="normal"
               required
               fullWidth
+              id="name"
+              label="name"
+              name="name"
+              onChange={handleChange}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
               id="email"
               label="Email Address"
               name="email"
@@ -111,7 +122,7 @@ export default function SignInSide() {
               color="primary"
               className={classes.submit}
             >
-              Log In
+              Sign In
             </Button>
           </form>
         </div>
